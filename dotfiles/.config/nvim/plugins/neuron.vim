@@ -1,7 +1,7 @@
 "#############################################################
 "# neuron.vim: Adds bindings to neuron Zettelkasten software #
 "#############################################################
-Plug 'PsiPhire/neuron.vim'
+Plug 'ZachariasLenz/neuron.vim'
 
 let g:neuron_no_mappings = 1
 let g:neuron_search_backend = 'rg'

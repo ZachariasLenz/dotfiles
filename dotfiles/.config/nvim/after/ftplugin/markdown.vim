@@ -1,6 +1,3 @@
-" Autocommands
-autocmd! VimLeave if exists('g:neuron_job_id') | call jobstop(g:neuron_job_id) | endif
-
 " Commands
 command! -nargs=* FootnoteCreate call footnotes#Create(<q-args>)
 command! -nargs=0 FootnoteJump call footnotes#Jump()
@@ -52,10 +49,9 @@ endfunction
 
 function! s:ZettelkastenInit() abort
     if filereadable(g:neuron_dir . 'neuron.dhall')
-        " We're in a Zettelkasten, so set the mappings and launch neuron.
-        nmap <silent> gf :call <SID>GoToFileOrSearch()<CR>
-        nmap <silent> gS :call neuron#tags_search()<CR>
-        let g:neuron_job_id = jobstart("neuron gen -wS --pretty-urls")
+        " We're in a Zettelkasten, so set the mappings.
+        nmap <buffer> <silent> gf :call <SID>GoToFileOrSearch()<CR>
+        nmap <buffer> <silent> gS :call neuron#tags_search()<CR>
     endif
 endfunction
 
