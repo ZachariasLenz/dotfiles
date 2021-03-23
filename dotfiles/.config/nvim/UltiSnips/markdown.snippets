@@ -1,0 +1,29 @@
+snippet _ "italics" iA
+_${1:${VISUAL}}_$0
+endsnippet
+
+snippet * "bold" iA
+**${1:${VISUAL}}**$0
+endsnippet
+
+snippet lnk "link" A
+[${1:${VISUAL:text}}](${3:https://${2:www.url.com}})$0
+endsnippet
+
+snippet img "image" A
+![${1:alt text}](${2:path}${3/.+/ "/}${3:optional title}${3/.+/"/})$0
+endsnippet
+
+snippet cbl "code block" bA
+\`\`\`
+$1
+\`\`\`
+$0
+endsnippet
+
+snippet dm "display math" bA
+\$\$
+$1
+\$\$
+$0
+endsnippet

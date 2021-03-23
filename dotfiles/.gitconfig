@@ -1,0 +1,13 @@
+[user]
+    name = Zacharias Lenz
+    email = zacharias.lenz@pm.me
+
+[merge]
+    tool = fugitive
+
+[mergetool]
+    keepBackup = false
+    prompt = true
+
+[mergetool "fugitive"]
+    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"

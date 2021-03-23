@@ -1,0 +1,6 @@
+[flake8]
+exclude = .git,__pycache__
+# Ignore the following errors:
+# E203,E501,W503: for black compatibility
+ignore = E203,E501,W503
+max_line_length = 88
