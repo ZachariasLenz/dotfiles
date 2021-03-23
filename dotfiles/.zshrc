@@ -155,14 +155,3 @@ alias pydevinit="poetry add --dev \
 alias vim="nvim"
 alias vimconfig="$EDITOR $MYVIMRC"
 alias zshconfig="$EDITOR ~/.zshrc"
-
-# # Automatically create aliases for all Vim sessions
-# sessions_dir=$HOME/.local/share/nvim/session
-# for session_path in $sessions_dir/*; do
-#     if [ ${session_path} = ${sessions_dir}/__LAST__ ]; then
-#         continue
-#     fi
-#     session_name="$(basename ${session_path})"
-#     session_dir="$(fd ${session_name} $HOME --type d)"
-#     alias ${session_name}="cd ${session_dir} && vim -S ${sessions_dir}/${session_name}"
-# done
