@@ -1,6 +1,7 @@
 # dotfiles
 
-My personal dotfiles for PopOS! Feel free to use anything you find useful.
+My personal dotfiles for [Pop!\_OS](https://pop.system76.com) (or any other
+unix-based OS). Feel free to use anything you find useful.
 
 ## Setup
 
