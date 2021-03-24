@@ -19,9 +19,13 @@ sudo apt install -y \
     default-jre \
     gcc \
     gfortran \
+    libasound2-dev \
     libbz2-dev \
+    libdbus-1-dev \
     libjansson-dev \
+    libpulse-dev \
     libseccomp-dev \
+    libsecret-tools \
     libsqlite3-dev \
     libssl-dev \
     libxml2-dev \
