@@ -5,8 +5,6 @@ sudo apt upgrade -y
 # Add repositories
 sudo add-apt-repository -y ppa:linuxuprising/java
 sudo add-apt-repository -y ppa:sebastian-stenzel/cryptomator
-curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add -
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 echo "deb https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
 curl -s https://syncthing.net/release-key.txt | sudo apt-key add -
 sudo apt update

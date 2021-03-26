@@ -1,4 +1,5 @@
 *.un~
 *.swp
 nvim/autoload/**
-dotfiles/.config/systemd/user/default.target.wants/spotifyd.service
+dotfiles/.config/nvim/.netrwhist
+dotfiles/.config/systemd/user/default.target.wants/**
