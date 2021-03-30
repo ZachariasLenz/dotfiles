@@ -10,7 +10,7 @@ let g:lightline = {
     \ 'colorscheme': 'nord',
     \ 'active': {
     \   'left': [['mode', 'paste'], ['gitbranch'], ['cocstatus']],
-    \   'right': [['pencil', 'lineinfo', 'fileencoding', 'filetype']]
+    \   'right': [['pencil', 'wordcount', 'lineinfo', 'fileencoding', 'filetype']]
     \ },
     \ 'inactive': {
     \   'left': [],
@@ -28,6 +28,7 @@ let g:lightline = {
     \   'lineinfo': 'LightlineLineInfo',
     \   'mode': 'LightlineMode',
     \   'pencil': 'PencilMode',
+    \   'wordcount': 'LightlineWordCount'
     \ },
     \ 'component_expand': {
     \   'buffers': 'lightline#bufferline#buffers',
@@ -124,6 +125,18 @@ function! LightlineMode() abort
         return lightline#mode()
     else
         return lightline#mode()[0]
+    endif
+endfunction
+
+function! LightlineWordCount() abort
+    if &filetype == 'markdown'
+        let s:old_status = v:statusmsg
+        execute "silent normal g\<c-g>"
+        let s:word_count = str2nr(split(v:statusmsg)[11])
+        let v:statusmsg = s:old_status
+        return s:word_count . ' words'
+    else
+        return ''
     endif
 endfunction
 
