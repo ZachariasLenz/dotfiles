@@ -130,11 +130,22 @@ endfunction
 
 function! LightlineWordCount() abort
     if &filetype == 'markdown'
-        let s:old_status = v:statusmsg
+        let l:old_status = v:statusmsg
         execute "silent normal g\<c-g>"
-        let s:word_count = str2nr(split(v:statusmsg)[11])
-        let v:statusmsg = s:old_status
-        return s:word_count . ' words'
+        try
+            let l:word_count = str2nr(split(v:statusmsg)[11])
+        catch
+            let l:word_count = 0
+        endtry
+        let v:statusmsg = l:old_status
+
+        if l:word_count == 0
+            return ''
+        elseif l:word_count == 1
+            return l:word_count . ' word'
+        else
+            return l:word_count . ' words'
+        endif
     else
         return ''
     endif
