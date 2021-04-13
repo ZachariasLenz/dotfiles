@@ -11,5 +11,6 @@
 
 [mergetool "fugitive"]
     cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+
 [core]
 	sshCommand = ssh -i ~/.ssh/zlenz -F /dev/null
