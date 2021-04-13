@@ -1,7 +1,7 @@
 "####################################################################
 "# vim-startify: Start screen and enables better session management #
 "####################################################################
-Plug 'mhinz/vim-startify'
+Plug 'ZachariasLenz/vim-startify'
 
 let g:startify_bookmarks = [
     \ {'c': '~/.config/nvim/coc-settings.json'},
