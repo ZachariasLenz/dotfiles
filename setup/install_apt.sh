@@ -13,6 +13,7 @@ sudo apt update
 sudo apt install -y \
     autoconf \
     automake \
+    cmake \
     curl \
     default-jre \
     gcc \
@@ -41,10 +42,8 @@ sudo apt install -y \
 # Install applications
 sudo apt install -y \
     cryptomator \
-    jq \
     fd-find \
-    pandoc \
-    spotify-client \
+    jq \
     syncthing \
     tree \
     xclip \

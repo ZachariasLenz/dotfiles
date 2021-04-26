@@ -1,38 +1,58 @@
- # Make directory to download install files
- DIR=$HOME/.terminal
- mkdir $DIR
- mkdir $HOME/.local/bin
+# Make directory to download install files
+DIR=$HOME/.terminal
+mkdir $DIR
+mkdir $HOME/.local/bin
 
- #####################
- # Terminal Emulator #
- #####################
+#####################
+# Terminal Emulator #
+#####################
 
- # Install Kitty terminal
- curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
- ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
- cp $HOME/.local/kitty.app/share/applications/kitty.desktop $HOME/.local/share/applications
- sed -i "s/Icon\=kitty/Icon\=\/home\/$USER\/.local\/kitty.app\/share\/icons\/hicolor\/256x256\/apps\/kitty.png/g" $HOME/.local/share/applications/kitty.desktop
+# Install Kitty terminal
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
+cp $HOME/.local/kitty.app/share/applications/kitty.desktop $HOME/.local/share/applications
+sed -i "s/Icon\=kitty/Icon\=\/home\/$USER\/.local\/kitty.app\/share\/icons\/hicolor\/256x256\/apps\/kitty.png/g" $HOME/.local/share/applications/kitty.desktop
 
- ####################
- # Fonts and Themes #
- ####################
+####################
+# Fonts and Themes #
+####################
 
- # Install Cascadia Code, Hasklig, and Victor Mono fonts patched for Nerd Fonts
- git clone --depth 1 https://github.com/ryanoasis/nerd-fonts $DIR/nerd-fonts
- cd $DIR/nerd-fonts
- sh -c ./install.sh Caskaydia\ Cove\ Nerd\ Font
- sh -c ./install.sh Hasklig
- sh -c ./install.sh Victor\ Mono
- fc-cache -f -v
+# Install Cascadia Code, and Victor Mono fonts patched for Nerd Fonts
+git clone --depth 1 https://github.com/ryanoasis/nerd-fonts $DIR/nerd-fonts
+cd $DIR/nerd-fonts
+sh -c ./install.sh CascadiaCode
+sh -c ./install.sh VictorMono
+fc-cache -f -v
 
- # Install Nord color scheme
- git clone https://github.com/arcticicestudio/nord-dircolors.git $DIR/nord-dircolors
- cd $DIR/nord-dircolors
- sh -c ./install.sh
+# Install Nord color scheme
+git clone https://github.com/arcticicestudio/nord-dircolors.git $DIR/nord-dircolors
+cd $DIR/nord-dircolors
+sh -c ./install.sh
 
- # Install powerlevel10k
- sudo sh -c 'echo "set bell-style none" >> /etc/inputrc'
- git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.powerlevel10k
+# Install powerlevel10k
+sudo sh -c 'echo "set bell-style none" >> /etc/inputrc'
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.powerlevel10k
+
+#######
+# Lua #
+#######
+
+# Install Lua
+cd $DIR
+curl -R -O http://www.lua.org/ftp/lua-5.4.3.tar.gz
+tar -zxf lua-5.4.3.tar.gz
+cd lua-5.4.3
+make linux test
+sudo make install
+
+# Install LuaRocks
+cd $DIR
+wget https://luarocks.org/releases/luarocks-3.7.0.tar.gz
+tar zxpf luarocks-3.7.0.tar.gz
+cd luarocks-3.7.0
+./configure && make && sudo make install
+sudo luarocks install luasocket
+cd $DIR
 
 ##########
 # Python #

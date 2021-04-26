@@ -12,6 +12,11 @@ fi
 # Set base PATH
 export PATH=/usr/local/{bin,sbin}:$PATH
 
+# Add Go to PATH if it exists
+if [[ -d "/usr/local/go/bin" ]]; then
+    export PATH=/usr/local/go/bin:$PATH
+fi
+
 # Include user's private bin directories if they exist
 if [[ -d "$HOME/.local/bin" ]]; then
     export PATH=$HOME/.local/bin:$PATH
@@ -25,11 +30,16 @@ if [[ -d "$HOME/.poetry/bin" ]]; then
     export PATH=$HOME/.poetry/bin:$PATH
 fi
 
+# Add luarocks to PATH if it exits
+if [[ -d "$HOME/.luarocks/bin" ]]; then
+    export PATH=$HOME/.luarocks/bin:$PATH
+fi
+
 ########################################################################################
 # User configuration
 ########################################################################################
 
-export LANG=C.UTF-8
+setopt NO_BEEP # No terminal beeping
 
 # Preserve shell history
 HISTFILE=~/.zsh_history
@@ -43,18 +53,34 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
     export EDITOR='nvim'
 fi
-export VISUAL='nvim'
+export VISUAL="nvim"
 
-# Compilation flags
-export ARCHFLAGS="-arch x86_64"
+# Set other environment variables
+export ARCHFLAGS="-arch x86_64" # Compilation flags
+export BAT_THEME="Nord" # Change bat theme
+export DOTFILES="$HOME/.dotfiles" # Export env var for dotfiles location
+export LANG=C.UTF-8 # Set language
+export MYVIMRC=$HOME/.config/nvim/init.vim # Set vimrc path
+export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket # Export the server address for neovim-remote to use
+export TERM_ITALICS="true" # Enable italics in terminal
+export XDG_CONFIG_HOME=$HOME/.config # Set config directory path
 
-# Set vimrc path
-export MYVIMRC=$HOME/.config/nvim/init.vim
+# Load Nix
+if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
+    . $HOME/.nix-profile/etc/profile.d/nix.sh;
+fi
 
-# No terminal beeping
-setopt NO_BEEP
+# Enable fuzzy file finder and use ripgrep instead of find
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND="rg --files --hidden"
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+    --color=fg:#e5e9f0,bg:#3b4252,hl:#81a1c1
+    --color=fg+:#e5e9f0,bg+:#3b4252,hl+:#81a1c1
+    --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
+    --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
+bindkey "^ " fzf-completion  # use CTRL-Space for FZF completion
 
-# Set up environment variables for nvm
+# Set up nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -65,34 +91,14 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
+# Source powerlevel10k
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+source ~/.powerlevel10k/powerlevel10k.zsh-theme
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 # Enable shell completion for poetry
 fpath+=~/.zfunc
 poetry completions zsh > ~/.zfunc/_poetry
-
-# Enable fuzzy file finder and use ripgrep instead of find
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_COMMAND='rg --files --hidden'
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
-    --color=fg:#e5e9f0,bg:#3b4252,hl:#81a1c1
-    --color=fg+:#e5e9f0,bg+:#3b4252,hl+:#81a1c1
-    --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
-    --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
-bindkey '^ ' fzf-completion  # use CTRL-Space for FZF completion
-
-# Change bat theme
-export BAT_THEME="Nord"
-
-# Enable pandoc completion
-eval "$(pandoc --bash-completion)"
-
-# Export env var for dotfiles location
-export DOTFILES="$HOME/.dotfiles"
-
-# Source powerlevel10k
-source ~/.powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Enable zsh plugins
 source ~/.zshplugins/zsh-history-substring-search/zsh-history-substring-search.zsh
@@ -104,54 +110,35 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 # Make UP and DOWN keys use zsh-history-substring-search plugin
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+bindkey "^[[A" history-substring-search-up
+bindkey "^[[B" history-substring-search-down
 
 # Use TAB for zsh autosuggestion accepting and SHIFT-TAB for expand
-bindkey '^I' autosuggest-accept
-bindkey '^[[Z' expand-or-complete
-
-# Export the server address for neovim-remote to use
-export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-
-# Load Nix
-if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
-    . $HOME/.nix-profile/etc/profile.d/nix.sh;
-fi
-
-# Set config directory path
-export XDG_CONFIG_HOME=$HOME/.config
+bindkey "^I" autosuggest-accept
+bindkey "^[[Z" expand-or-complete
 
 ########################################################################################
 # Aliases
 ########################################################################################
 
-# Set personal aliases. For a full list of active aliases, run `alias`
-
 # Use dircolors
-alias ls='ls --color=auto'
-alias dir='dir --color=auto'
-alias vdir='vdir --color=auto'
+alias ls="ls --color=auto"
+alias dir="dir --color=auto"
+alias vdir="vdir --color=auto"
 alias vtop="vtop --theme nord"
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+alias grep="grep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias egrep="egrep --color=auto"
 
 # Convenience
 alias lsa="ls -lAh"
-alias pydevinit="poetry add --dev \
-    black \
-    flake8 \
-    flake8-bugbear \
-    flake8-builtins \
-    flake8-cognitive-complexity \
-    flake8-comprehensions \
-    flake8-eradicate \
-    flake8-variables-names \
-    isort \
-    mypy \
-    pydocstyle \
-    rope"
 alias vim="nvim"
 alias vimconfig="$EDITOR $MYVIMRC"
 alias zshconfig="$EDITOR ~/.zshrc"
+
+# Other
+alias vimprofile="vim --cmd 'profile start vim.profile' --cmd 'profile func *' --cmd 'profile file *'"
+
+# TODO: Remove and uninstall the appimage once 0.5 is officially released
+alias update-nvim="cd ~/.local/bin/ && curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod u+x nvim.appimage && mv nvim.appimage nvim && cd"
+alias nvim="$HOME/.local/bin/nvim"
