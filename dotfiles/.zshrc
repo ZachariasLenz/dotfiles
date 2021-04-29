@@ -16,6 +16,9 @@ export PATH=/usr/local/{bin,sbin}:$PATH
 if [[ -d "/usr/local/go/bin" ]]; then
     export PATH=/usr/local/go/bin:$PATH
 fi
+if [[ -d "$HOME/go/bin" ]]; then
+    export PATH=$HOME/go/bin:$PATH
+fi
 
 # Include user's private bin directories if they exist
 if [[ -d "$HOME/.local/bin" ]]; then
@@ -137,7 +140,7 @@ alias vimconfig="$EDITOR $MYVIMRC"
 alias zshconfig="$EDITOR ~/.zshrc"
 
 # Other
-alias vimprofile="vim --cmd 'profile start vim.profile' --cmd 'profile func *' --cmd 'profile file *'"
+alias vimprofile="vim --cmd 'profile start init.profile' --cmd 'profile func *' --cmd 'profile file *'"
 
 # TODO: Remove and uninstall the appimage once 0.5 is officially released
 alias update-nvim="cd ~/.local/bin/ && curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod u+x nvim.appimage && mv nvim.appimage nvim && cd"

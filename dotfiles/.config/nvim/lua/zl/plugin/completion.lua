@@ -1,6 +1,9 @@
 local t = require('zl.utils').t
 local map = vim.api.nvim_set_keymap
 
+
+local completion = require('compe')
+
 vim.o.completeopt = 'menuone,noselect'
 require('compe').setup {
    enabled = true,
@@ -18,12 +21,13 @@ require('compe').setup {
    source = {
       path = true,
       buffer = true,
-      spell = true,
       calc = true,
       nvim_lsp = true,
       nvim_lua = true,
       vsnip = true,
       nvim_treesitter = true,
+      -- Custom sources.
+      dictionary = true,
    },
 }
 
@@ -68,7 +72,7 @@ map('s', '<S-Tab>', 'v:lua.s_tab_complete()', {expr = true})
 
 map('i', '<C-Space>', 'compe#complete()', {expr = true, silent = true})
 map('i', '<C-e>', "compe#close('<C-e>')", {expr = true, silent = true})
-map('i', '<C-f>', "compe#scroll({'delta': +4})", {expr = true, silent = true})
+map('i', '<C-u>', "compe#scroll({'delta': +4})", {expr = true, silent = true})
 map('i', '<C-d>', "compe#scroll({'delta': -4})", {expr = true, silent = true})
 
 vim.cmd[[highlight link CompeDocumentation NormalFloat]]

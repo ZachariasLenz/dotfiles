@@ -2,6 +2,9 @@ local opt = require('zl.utils').opt
 opt('w', 'foldmethod', 'expr')
 opt('w', 'foldexpr', 'nvim_treesitter#foldexpr()')
 
+vim.cmd[[highlight default link TSDefinition IncSearch]]
+vim.cmd[[highlight default link TSDefinitionUsage Search]]
+
 require('nvim-treesitter.configs').setup {
     ensure_installed = 'maintained',
     highlight = {enable = true},
@@ -23,7 +26,7 @@ require('nvim-treesitter.configs').setup {
             keymaps = {
                 goto_definition_lsp_fallback = '<NUL>',
                 list_definitions = '<NUL>',
-                list_definitions_toc = 'gO',
+                list_definitions_toc = '<NUL>',
                 goto_next_usage = '<TAB>',
                 goto_previous_usage = '<S-TAB>',
             },

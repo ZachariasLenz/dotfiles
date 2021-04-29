@@ -9,9 +9,10 @@ local colors = utils.colors
 local contains = utils.contains
 local filetypes = utils.filetypes
 
-local function is_programming_file()
-   return contains(filetypes.programming, vim.bo.filetype)
+local function has_lsp()
+   return contains(filetypes.lsp, vim.bo.filetype)
 end
+
 local function is_text_file()
    return contains(filetypes.text, vim.bo.filetype)
 end
@@ -24,7 +25,7 @@ local function is_wide()
    end
 end
 
-gl.short_line_list = {'packer'}
+gl.short_line_list = {'packer', 'Outline'}
 
 gls.left[1] = {
    LeftBarBegin = {
@@ -89,25 +90,24 @@ gls.left[3] = {
       separator_highlight = {colors.nord8, colors.nord1},
    }
 }
-gls.left[4] = {
+--[[ gls.left[4] = {
    FileType = {
       highlight = {colors.nord5, colors.nord1},
       provider = function()
-         if is_programming_file() then
+         if has_lsp() or is_text_file() then
             return gl_fileinfo.get_file_icon()
-         elseif is_text_file() then
-            return ' '
          else
             return ''
          end
       end
    }
-}
+} ]]
 
 gls.left[5] = {
    LspClient = {
-      condition = is_programming_file,
+      condition = has_lsp,
       highlight = {colors.nord5, colors.nord1},
+      icon = gl_fileinfo.get_file_icon,
       provider = 'GetLspClient',
       separator = ' | ',
       separator_highlight = {colors.nord8, colors.nord1},
@@ -115,7 +115,7 @@ gls.left[5] = {
 }
 gls.left[6] = {
    DiagnosticError = {
-      condition = is_programming_file,
+      condition = has_lsp,
       highlight = {colors.nord11, colors.nord1},
       icon = ' ',
       provider = 'DiagnosticError',
@@ -123,7 +123,7 @@ gls.left[6] = {
 }
 gls.left[7] = {
    DiagnosticWarn = {
-      condition = is_programming_file,
+      condition = has_lsp,
       highlight = {colors.nord13, colors.nord1},
       icon = ' ',
       provider = 'DiagnosticWarn',
@@ -131,7 +131,7 @@ gls.left[7] = {
 }
 gls.left[8] = {
    DiagnosticHint = {
-      condition = is_programming_file,
+      condition = has_lsp,
       highlight = {colors.nord10, colors.nord1},
       icon = ' ',
       provider = 'DiagnosticHint',
@@ -139,7 +139,7 @@ gls.left[8] = {
 }
 gls.left[9] = {
    DiagnosticInfo = {
-      condition = is_programming_file,
+      condition = has_lsp,
       highlight = {colors.nord8, colors.nord1},
       icon = ' ',
       provider = 'DiagnosticInfo',
@@ -192,18 +192,22 @@ gls.right[4] = {
    }
 }
 gls.right[5] = {
-   GitDir = {
-      condition = gl_condition.check_git_workspace,
+   ProjectDir = {
       highlight = {colors.nord5, colors.nord1},
       icon = '  ',
       provider = function()
          if not is_wide() then return '' end
-         local git_dir = vim.fn.finddir('.git/..', vim.fn.expand('%:p:h') .. ';')
+
+         local project_dir = vim.fn.getcwd()
+         if gl_condition.check_git_workspace then
+            project_dir = vim.fn.finddir('.git/..', vim.fn.expand('%:p:h') .. ';')
+         end
+
          local home = vim.env['HOME']
-         if git_dir:sub(1, #home) == home then
-            return git_dir:sub(#home + 2, #git_dir)
+         if project_dir:sub(1, #home) == home then
+            return project_dir:sub(#home + 2, #project_dir)
          else
-            return git_dir
+            return project_dir
          end
       end,
       separator = ' ',

@@ -49,6 +49,7 @@ require('formatter').setup {
    filetype = {
       lua = {lua_config},
       markdown = {prettier_config},
+      ['markdown.pandoc'] = {prettier_config},
       python = {black_config, isort_config},
    },
 }

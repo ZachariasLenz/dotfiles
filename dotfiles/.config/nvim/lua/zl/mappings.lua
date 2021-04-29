@@ -26,29 +26,9 @@ map('n', '<C-l>', '<C-w>l', opts)
 -- Go back to previous jump.
 map('n', 'gb', '<C-o>', opts)
 
--- Improve vim's search pattern matching (and allow default / behaviour with <leader>).
-map('n', '<leader>/', '/\\v', opts)
-map('v', '/', '/\\v', opts)
-map('n', '<leader>?', '?\\v', opts)
-map('v', '?', '?\\v', opts)
-
 -- Make indentation in visual mode keep the selected text.
 map('v', '<', '<gv', opts)
 map('v', '>', '>gv', opts)
-
--- Open, go the next, previous, last and first quickfix.
-map('n', '<leader>q', ':copen<CR>', opts)
-map('n', ']q', ':cnext<CR>', opts)
-map('n', '[q', ':cprevious<CR>', opts)
-map('n', ']Q', ':clast<CR>', opts)
-map('n', '[Q', ':cfirst<CR>', opts)
-
--- Open, go the next, previous, last and first location list.
-map('n', '<leader>l', ':lopen<CR>', opts)
-map('n', ']l', ':lnext<CR>', opts)
-map('n', '[l', ':lprevious<CR>', opts)
-map('n', ']L', ':llast<CR>', opts)
-map('n', '[L', ':lfirst<CR>', opts)
 
 -- Custom text objects.
 map('o', 'ie', ':execute "normal! ggVG"<CR>', opts)   -- in entire buffer.

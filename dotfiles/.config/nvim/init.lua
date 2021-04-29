@@ -10,7 +10,8 @@ require('zl.plugins')
 -- Force loading of astronauta first.
 vim.cmd [[runtime plugin/astronauta.vim]]
 
--- Load general Neovim auto-commands, mappings and options.
+-- Load general Neovim (auto-)commands, mappings and options.
 require('zl.autocommands')
+require('zl.commands')
 require('zl.mappings')
 require('zl.options')

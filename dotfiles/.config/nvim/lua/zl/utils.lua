@@ -18,14 +18,20 @@ utils.colors = {
    nord14 = '#A3BE8C',
    nord15 = '#B48EAD',
 }
+
 utils.filetypes = {
-   all = {},
-   programming = {
-      'python',
-      'sh',
-      'sql',
-      'vim',
-      'zsh',
+   lsp = {
+      ['markdown.pandoc'] = 'zkls',
+      markdown = 'zkls',
+      pandoc = 'zkls',
+      python = 'pyright',
+      sh = 'bashls',
+      vim = 'vimls',
+   },
+   markdown = {
+      'markdown', 
+      'markdown.pandoc', 
+      'pandoc'
    },
    text = {
       'asciidoc',
@@ -40,12 +46,19 @@ utils.filetypes = {
       'textile',
    },
 }
-for k, v in pairs(utils.filetypes) do
-   if k ~= 'all' then
-      for _, ft in ipairs(v) do
-         table.insert(utils.filetypes.all, ft)
+
+function utils.contains(table, item)
+   if table[item] ~= nil then
+      return true
+   end
+
+   for _, value in pairs(table) do
+      if value == item then
+         return true
       end
    end
+
+   return false
 end
 
 -- Helper function to set options until
@@ -60,20 +73,6 @@ end
 
 function utils.t(str)
    return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-   function utils.contains(table, item)
-   if table[item] ~= nil then
-      return true
-   end
-
-   for _, value in pairs(table) do
-      if value == item then
-         return true
-      end
-   end
-
-   return false
 end
 
 return utils

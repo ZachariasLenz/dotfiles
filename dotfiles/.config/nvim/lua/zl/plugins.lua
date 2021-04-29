@@ -31,8 +31,7 @@ end
 -- Install and configure plugins.
 return require('packer').startup(
    function(use)
-      local utils = require('zl.utils')
-      local filetypes = utils.filetypes
+      local filetypes = require('zl.utils').filetypes
 
       -- Plugin manager.
       use 'wbthomason/packer.nvim'
@@ -40,9 +39,8 @@ return require('packer').startup(
       -- Neovim implementation of Magit.
       use {
          'TimUntersberger/neogit',
-         keys = '<leader>g',
+         config = 'vim.api.nvim_set_keymap("n", "<leader>g", ":Neogit<CR>", {})',
          requires = 'nvim-lua/plenary.nvim',
-         setup = 'vim.api.nvim_set_keymap("n", "<leader>g", ":Neogit<CR>", {})',
       }
 
       -- Nord colorscheme.
@@ -55,34 +53,31 @@ return require('packer').startup(
          end,
          requires = 'tjdevries/colorbuddy.nvim',
       }
-      use {
-         'ZachariasLenz/nord-vim',
-         config = function()
-            vim.g.nord_bold = true
-            vim.g.nord_italic = true
-            vim.g.nord_italic_comments = true
-            -- vim.cmd[[colorscheme nord]]
-         end,
-      }
 
       -- Query local and remote thesauruses.
       use {
          'ahayman/thesaurus_query.vim',
-         keys = '<leader>t',
-         setup = function() require('zl.plugin.thesaurus_query') end,
+         config = function() require('zl.plugin.thesaurus_query') end,
       }
 
       -- Comment code.
       use {
          'b3nj5m1n/kommentary',
-         keys = 'gc',
+         config = function() 
+            require('kommentary.config').configure_language('lua', {
+               prefer_single_line_comments = true,
+            })
+         end,
+		}
+
+      -- Treat snake_cased and camelCased words as separate words for motions.
+      use {
+         'chaoren/vim-wordmotion',
+         cond = function()
+            local utils = require('zl.utils')
+            return not utils.contains(utils.filetypes.text, vim.bo.filetype)
+         end,
       }
-
-      -- Project-specific spell files.
-      use 'dbmrq/vim-dialect'
-
-      -- Fading highlight after jump.
-      use 'edluffy/specs.nvim'
 
       -- Better statusline.
       use {
@@ -95,38 +90,38 @@ return require('packer').startup(
       -- Code completion from different sources.
       use {
          'hrsh7th/nvim-compe',
-         config = function() require('zl.plugin.completion') end,
+         config = function() 
+            require('zl.plugin.completion_dictionary')
+            require('zl.plugin.completion')
+         end,
          requires = {'hrsh7th/vim-vsnip', 'rafamadriz/friendly-snippets'}
       }
 
       -- Distraction-free writing.
       use {
          'junegunn/goyo.vim',
-         keys = '<leader>f',
-         requires = {{'junegunn/limelight.vim', keys = '<leader>f'}},
-         setup = function()
+         config = function()
             vim.g.goyo_width = 80
             vim.cmd[[autocmd! User GoyoEnter Limelight]]
             vim.cmd[[autocmd! User GoyoLeave Limelight!]]
-            vim.api.nvim_set_keymap('n', '<leader>f', ':Goyo<CR>', {silent = true})
+            vim.api.nvim_set_keymap('n', 'L', ':Goyo<CR>', {silent = true})
          end,
+         requires = 'junegunn/limelight.vim',
       }
 
       -- Generate docstrings for many languages.
       use {
          'kkoomen/vim-doge',
-         keys = '<leader>d',
-         run = function() vim.fn[[doge#install()]] end,
-         setup = function()
+         config = function()
             vim.g.doge_doc_standard_python = 'google'
             vim.g.doge_comment_jump_modes = {'n', 's'}
          end,
+         run = function() vim.fn[[doge#install()]] end,
       }
 
       -- Show signs in the gutter with the current git status.
       use {
          'lewis6991/gitsigns.nvim',
-         after = 'nord-vim',
          config = function() require('zl.plugin.gitsigns') end,
          requires = {'nvim-lua/plenary.nvim', 'tpope/vim-repeat'},
       }
@@ -156,14 +151,27 @@ return require('packer').startup(
          setup = function()
             vim.g.traces_abolish_integration = true
             vim.g.traces_preview_window = "winwidth('%') > 160 ? 'bot vnew' : 'bot 10new'"
-         end
+         end,
+      }
+
+      -- Neovim integration with zk (https://github.com/mickael-menu/zk).
+      use {
+         'megalithic/zk.nvim',
+         config = function()
+            require('zk').setup({
+               enable_default_keymaps = false,
+               fuzzy_finder = 'telescope',
+               link_format = 'wikilink',
+            })
+         end,
+         ft = 'markdown',
+         run = ':ZkInstall',
       }
 
       -- Automatically format code and text.
       use {
          'mhartington/formatter.nvim',
          config = function() require('zl.plugin.formatter') end,
-         event = 'BufWritePre',
       }
 
       -- Install LSP servers and related utilities for code intelligence.
@@ -171,33 +179,42 @@ return require('packer').startup(
          'neovim/nvim-lspconfig',
          as = 'lspconfig',
          config = function() require('zl.plugin.lsp') end,
-         ft = filetypes.programming,
       }
       use {
          'alexaandru/nvim-lspupdate',
-         ft = filetypes.programming,
+         after = 'lspconfig',
          requires = 'lspconfig',
          run = ':LspUpdate',
       }
       use {
          'kosayoda/nvim-lightbulb',
+         after = 'lspconfig',
          config = function()
             require('nvim-lightbulb').update_lightbulb {
                sign = {enabled = false},
                virtual_text = {
-                  enabled = false,
+                  enabled = true,
                   text = "💡",
                },
             }
          end,
-         ft = filetypes.programming,
          requires = 'lspconfig',
       }
 
       -- Fuzzy finder for everything.
       use {
          'nvim-telescope/telescope.nvim',
-         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
+         config = function() require('zl.plugin.telescope') end,
+         requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'},
+      }
+      use {
+         'nvim-telescope/telescope-frecency.nvim',
+         after = 'telescope.nvim',
+         config = function()
+            require('telescope').load_extension('frecency')
+            vim.api.nvim_set_keymap('n', '<leader>fF', '<Cmd>lua require("telescope").extensions.frecency.frecency()<CR>', {noremap = true, silent = true})
+         end,
+         requires = {'telescope.nvim', 'tami5/sql.nvim'},
       }
 
       -- Better syntax highlighting, code-based textobjects and navigation.
@@ -217,12 +234,11 @@ return require('packer').startup(
          'phaazon/hop.nvim',
          as = 'hop',
          config = function()
-            vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require('hop').hint_char1()<CR>", {})
-            vim.api.nvim_set_keymap('n', 'F', "<cmd>lua require('hop').hint_words()<CR>", {})
-            vim.api.nvim_set_keymap('n', 't', "<cmd>lua require('hop').hint_char2()<CR>", {})
-            vim.api.nvim_set_keymap('n', 'T', "<cmd>lua require('hop').hint_lines()<CR>", {})
+            require('hop').setup {
+               keys = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+            }
+            vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require('hop').hint_words()<CR>", {})
          end,
-         keys = {'f', 'F', 't', 'T'},
       }
 
       -- Improved sentence textobjects.
@@ -230,31 +246,43 @@ return require('packer').startup(
          'preservim/vim-textobj-sentence',
          after = 'vim-textobj-user',
          config = 'vim.cmd[[call textobj#sentence#init()]]',
-         ft = filetypes.text,
-         requires = {{'kana/vim-textobj-user', ft = filetypes.text}},
+         requires = 'kana/vim-textobj-user',
       }
 
-      -- Automatically load the session for the current directory.
+      -- Automatically load the session for the current directory and add
+      -- session searching.
+      use 'rmagatti/auto-session'
       use {
-         'rmagatti/auto-session',
+         'rmagatti/session-lens',
          config = function()
-            require('auto-session').setup {
-               auto_session_enable_last_session=true,
+            require('telescope._extensions.session-lens').setup {
+               shorten_path = false,
+               previewer = false,
             }
+            vim.api.nvim_set_keymap('n', '<C-space>', ':lua require("telescope._extensions.session-lens.main").search_session()<CR>', {silent = true})
          end,
+         requires = {
+            'auto-session',
+            'nvim-lua/plenary.nvim',
+            'nvim-lua/popup.nvim',
+            'telescope.nvim',
+         }
       }
 
+      -- Bufferline with great navigation.
       use {
          'romgrk/barbar.nvim',
          config = function() require('zl.plugin.barbar') end,
          requires = 'kyazdani42/nvim-web-devicons',
       }
 
-      -- Improved syntax highlighting for almost all languages.
+      -- Show outline of all LSP symbols.
       use {
-         'sheerun/vim-polyglot',
-         event = 'VimEnter',
-         setup = function() require('zl.plugin.polyglot') end,
+         'simrat39/symbols-outline.nvim',
+         config = function()
+            require('symbols-outline').setup()
+            vim.api.nvim_set_keymap('n', 'gO', ':SymbolsOutline<CR>', {silent = true})
+         end,
       }
 
       -- Utilities for auto-correction, smarter text substitution, text case
@@ -269,7 +297,6 @@ return require('packer').startup(
       use {
          'svermeulen/vim-subversive',
          config = function() require('zl.plugin.subversive') end,
-         keys = {'s', 'ss', 'S', '<leader>s', '<leader>ss'},
          requires = 'vim-abolish',
       }
 
@@ -279,14 +306,20 @@ return require('packer').startup(
       -- Utility commands for interacting with Unix.
       use 'tpope/vim-eunuch'
 
+      -- Better Markdown syntax highlighting.
+      use {
+         'vim-pandoc/vim-pandoc-syntax',
+         config = function()
+            vim.cmd[[let g:pandoc#syntax#conceal#urls = 1]]
+            vim.cmd[[au! BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc]]
+         end
+      }
+
       -- Automatically add pairs for brackets, quotes, etc.
       use {
          'windwp/nvim-autopairs',
          config = function() require('zl.plugin.autopairs') end,
-         requires = {
-            'hrsh7th/nvim-compe',
-            'nvim-treesitter/nvim-treesitter',
-         },
+         requires = {'nvim-compe', 'nvim-treesitter'},
       }
    end
 )
