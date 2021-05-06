@@ -1,4 +1,4 @@
-local completion = require('compe')
+local completion = require("compe")
 
 local dictionary_file = vim.o.dictionary or ""
 local word_map = {}
@@ -22,7 +22,7 @@ end
 function Source:get_metadata()
    return {
       priority = 1,
-      menu = '[Dict]',
+      menu = "[Dict]",
    }
 end
 
@@ -32,10 +32,10 @@ end
 
 function Source:complete(context)
    local first = context.input:sub(1, 1)
-   local words = {unpack(word_map[first])}
+   local words = { unpack(word_map[first]) }
    if words then
-      context.callback({items = words})
+      context.callback({ items = words })
    end
 end
 
-completion.register_source('dictionary', Source)
+completion.register_source("dictionary", Source)

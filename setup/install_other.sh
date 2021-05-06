@@ -17,6 +17,10 @@ sed -i "s/Icon\=kitty/Icon\=\/home\/$USER\/.local\/kitty.app\/share\/icons\/hico
 # Fonts and Themes #
 ####################
 
+cd $HOME/.local/share/fonts
+curl -LO https://github.com/microsoft/vscode-codicons/blob/main/dist/codicon.ttf
+cd $DIR
+
 # Install Cascadia Code, and Victor Mono fonts patched for Nerd Fonts
 git clone --depth 1 https://github.com/ryanoasis/nerd-fonts $DIR/nerd-fonts
 cd $DIR/nerd-fonts
@@ -45,6 +49,13 @@ cd lua-5.4.3
 make linux test
 sudo make install
 
+# Install LuaJIT
+cd $DIR
+git clone https://github.com/LuaJIT/LuaJIT.git
+cd LuaJIT
+git checkout v2.1
+make && sudo make install
+
 # Install LuaRocks
 cd $DIR
 wget https://luarocks.org/releases/luarocks-3.7.0.tar.gz
@@ -71,23 +82,35 @@ curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.p
 export PATH=$HOME/.poetry/bin:$PATH
 poetry config virtualenvs.in-project true
 
+########
+# Rust #
+########
+
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+
+# Install lua formatter
+cargo install stylua
+
 ##########
 # Neovim #
 ##########
 
-# Post install setup for neovim: make virtuenv, install python package and ctags
+# Install Neovim nightly.
+cd ~/.local/bin/
+curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+chmod u+x nvim.appimage
+mv nvim.appimage nvim
+cd $DIR
+
+# Post install setup for neovim: make virtuenv and install python package
 pip3 install --user neovim-remote
 pyenv install 3.9.1
 pyenv virtualenv 3.9.1 neovim
 pyenv activate neovim
 pip install neovim neovim-remote
 pyenv deactivate
-git clone https://github.com/universal-ctags/ctags.git $DIR/ctags
-cd $DIR/ctags
-sh -c ./autogen.sh
-sh -c ./configure
-make
-sudo make install
 
 #########
 # Utils #

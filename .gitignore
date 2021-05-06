@@ -1,5 +1,4 @@
 *.un~
 *.swp
-nvim/autoload/**
 dotfiles/.config/nvim/.netrwhist
 dotfiles/.config/systemd/user/default.target.wants/**

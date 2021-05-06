@@ -5,5 +5,8 @@ export NVM_DIR="$HOME/.nvm"
 nvm install --lts
 nvm use --lts
 
-# Install vtop
-npm install -g vtop
+# Install global packages
+npm i -g vtop
+npm i -g prettier @prettier/plugin-xml
+npm i -g prettier-plugin-sh
+npm i -g prettier-plugin-toml --save-dev --save-exact

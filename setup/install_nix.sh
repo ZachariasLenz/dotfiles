@@ -7,9 +7,6 @@ nix-env -iA cachix -f https://cachix.org/api/v1/install
 cachix use srid
 nix-env -if https://github.com/srid/neuron/archive/master.tar.gz
 
-# Install neovim
-nix-env -iA nixpkgs.neovim
-
 # install spotify-tui
 nix-env -iA nixpkgs.spotify-tui
 

@@ -20,14 +20,6 @@ if [[ -d "$HOME/go/bin" ]]; then
     export PATH=$HOME/go/bin:$PATH
 fi
 
-# Include user's private bin directories if they exist
-if [[ -d "$HOME/.local/bin" ]]; then
-    export PATH=$HOME/.local/bin:$PATH
-fi
-if [[ -d "$HOME/bin" ]]; then
-    export PATH=$HOME/bin:$PATH
-fi
-
 # Add poetry to PATH if it exists
 if [[ -d "$HOME/.poetry/bin" ]]; then
     export PATH=$HOME/.poetry/bin:$PATH
@@ -36,6 +28,19 @@ fi
 # Add luarocks to PATH if it exits
 if [[ -d "$HOME/.luarocks/bin" ]]; then
     export PATH=$HOME/.luarocks/bin:$PATH
+fi
+
+# Add Rust toolchain to PATH if it exists
+if [[ -d "$HOME/.cargo/bin" ]]; then
+   export PATH=$HOME/.cargo/bin:$PATH
+fi
+
+# Include user's private bin directories if they exist
+if [[ -d "$HOME/.local/bin" ]]; then
+    export PATH=$HOME/.local/bin:$PATH
+fi
+if [[ -d "$HOME/bin" ]]; then
+    export PATH=$HOME/bin:$PATH
 fi
 
 ########################################################################################
@@ -65,8 +70,10 @@ export DOTFILES="$HOME/.dotfiles" # Export env var for dotfiles location
 export LANG=C.UTF-8 # Set language
 export MYVIMRC=$HOME/.config/nvim/init.vim # Set vimrc path
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket # Export the server address for neovim-remote to use
+export SHELL=zsh # Use zsh as default shell
 export TERM_ITALICS="true" # Enable italics in terminal
 export XDG_CONFIG_HOME=$HOME/.config # Set config directory path
+export ZK_NOTEBOOK_DIR=$HOME/zettelkasten # Set main zk notebook directory
 
 # Load Nix
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
@@ -103,6 +110,9 @@ source ~/.powerlevel10k/powerlevel10k.zsh-theme
 fpath+=~/.zfunc
 poetry completions zsh > ~/.zfunc/_poetry
 
+# TODO
+autoload -Uz todo
+
 # Enable zsh plugins
 source ~/.zshplugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 source ~/.zshplugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -125,13 +135,14 @@ bindkey "^[[Z" expand-or-complete
 ########################################################################################
 
 # Use dircolors
-alias ls="ls --color=auto"
 alias dir="dir --color=auto"
+alias egrep="egrep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias grep="grep --color=auto"
+alias ls="ls --color=auto"
+alias tree="tree -I '.git|zotero'"
 alias vdir="vdir --color=auto"
 alias vtop="vtop --theme nord"
-alias grep="grep --color=auto"
-alias fgrep="fgrep --color=auto"
-alias egrep="egrep --color=auto"
 
 # Convenience
 alias lsa="ls -lAh"
@@ -141,7 +152,3 @@ alias zshconfig="$EDITOR ~/.zshrc"
 
 # Other
 alias vimprofile="vim --cmd 'profile start init.profile' --cmd 'profile func *' --cmd 'profile file *'"
-
-# TODO: Remove and uninstall the appimage once 0.5 is officially released
-alias update-nvim="cd ~/.local/bin/ && curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod u+x nvim.appimage && mv nvim.appimage nvim && cd"
-alias nvim="$HOME/.local/bin/nvim"
